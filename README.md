@@ -114,7 +114,7 @@ Caused by (2/2): ErrCodeError [TEST-1002][29fa2d64-f90d-11ec-ba5c-a860b613b330] 
 ```
 
 #### ErrCodeErr errors and fiber http server
-To wrap ErrCodeErr into TMF format (regarding this TMF format see details [here](https://github.com/netcracker/qubership-core-lib-go-error-handling/blob/main/core-error-handling-rest) 
+To wrap ErrCodeErr into TMF format (regarding this TMF format see details [here](https://github.com/Netcracker/qubership-core-lib-go-error-handling/blob/main/tmf/errors.go) 
 before sending REST response in the fiber http server use [fiber-server-utils lib](https://github.com/netcracker/qubership-core-lib-go-fiber-server-utils)
 below is the snipped how to set up fiber server with DefaultErrorHandler:
 ```
