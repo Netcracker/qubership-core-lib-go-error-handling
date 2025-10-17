@@ -17,18 +17,6 @@ type RemoteMultiCauseError struct {
 	Causes []*RemoteErrCodeError
 }
 
-func (e *RemoteMultiCauseError) GetStackTrace() string {
-	s := e.Error() + "\n"
-	prefix := " "
-	for i, cause := range e.Causes {
-		s += fmt.Sprintf("Caused by (%d/%d): ", i+1, len(e.Causes))
-		stackTrace := cause.GetStackTrace()
-		nlCount := strings.Count(stackTrace, "\n")
-		s += strings.Replace(stackTrace, "\n", "\n"+prefix, nlCount-1)
-	}
-	return s
-}
-
 func NewRemoteErrCodeError(id string, code ErrorCode, detail string, meta map[string]interface{},
 	status *int, source interface{}) *RemoteErrCodeError {
 	return &RemoteErrCodeError{
@@ -51,4 +39,16 @@ func NewRemoteMultiCauseError(id string, code ErrorCode, detail string, meta map
 		RemoteErrCodeError: NewRemoteErrCodeError(id, code, detail, meta, status, source),
 		Causes:             causes,
 	}
+}
+
+func (e *RemoteMultiCauseError) GetStackTrace() string {
+	s := e.Error() + "\n"
+	prefix := " "
+	for i, cause := range e.Causes {
+		s += fmt.Sprintf("Caused by (%d/%d): ", i+1, len(e.Causes))
+		stackTrace := cause.GetStackTrace()
+		nlCount := strings.Count(stackTrace, "\n")
+		s += strings.Replace(stackTrace, "\n", "\n"+prefix, nlCount-1)
+	}
+	return s
 }

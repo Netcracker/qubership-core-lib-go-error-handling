@@ -1,10 +1,12 @@
 package tmf
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/google/uuid"
 	"github.com/netcracker/qubership-core-lib-go-error-handling/v3/errors"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -99,4 +101,34 @@ func TestBuildErrorCodeErrorMultiCauseErr(t *testing.T) {
 	assertions.Equal(err2Reason, causeErr2.GetErrorCode().Title)
 	assertions.Equal(err2Message, causeErr2.GetDetail())
 	assertions.Equal(err2Status, *causeErr2.Status)
+}
+
+func TestErrToResponse_SingleError(t *testing.T) {
+	code := errors.ErrorCode{Code: "E001", Title: "Title1"}
+	status := 400
+	source := map[string]string{"service": "svc1"}
+
+	meta := map[string]interface{}{"env": "dev"}
+	err := errors.NewRemoteErrCodeError("id123", code, "something broke", meta, &status, source)
+
+	resp := ErrToResponse(err, status)
+
+	require.NotNil(t, resp)
+	assert.Equal(t, err.GetId(), resp.Id)
+	assert.Equal(t, code.Code, resp.Code)
+	assert.Equal(t, code.Title, resp.Reason)
+	assert.Equal(t, err.GetDetail(), resp.Message)
+	require.NotNil(t, resp.Status)
+	assert.Equal(t, strconv.Itoa(status), *resp.Status)
+	assert.Nil(t, resp.Errors)
+	assert.Equal(t, TypeV1_0, resp.Type)
+}
+
+func TestErrToResponse_EmptyCauses(t *testing.T) {
+	status := 200
+	err := errors.NewRemoteErrCodeError("id-empty", errors.ErrorCode{Code: "EMPTY", Title: "Empty"}, "no causes", nil, nil, nil)
+
+	resp := ErrToResponse(err, status)
+	require.NotNil(t, resp)
+	assert.Nil(t, resp.Errors)
 }
