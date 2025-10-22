@@ -2,10 +2,11 @@ package errors
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func testErrorCode(code int) ErrorCode {
