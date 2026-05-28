@@ -244,3 +244,4 @@ See example below how to parse and wrap remote errors
 		return resp, errCodeError
 	}
 ```
+
